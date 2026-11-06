@@ -1,0 +1,23 @@
+services:
+  app:
+    build: .
+    container_name: app-php
+    ports:
+      - "8081:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: hola_db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
